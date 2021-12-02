@@ -1,17 +1,14 @@
-// grab the Toekn contract 
+import { tokens } from './helpers'
+
+
+
+// grab the Token contract 
 const Token = artifacts.require('./Token')
 
 // import additional testing methods
 require('chai')
 	.use(require('chai-as-promised'))
 	.should()
-
-// helper function to handle large numbers
-const tokens = (n) => {
-	return new web3.utils.BN(
-		web3.utils.toWei(n.toString(), 'ether')
-	)
-}
 
 // use the contract methd to include the tests
 contract('Token', ([deployer, receiver]) => {

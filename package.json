@@ -9,6 +9,8 @@
     "serve": "vite preview"
   },
   "dependencies": {
+    "@babel/polyfill": "^7.12.1",
+    "@babel/preset-env": "^7.16.4",
     "@truffle/hdwallet-provider": "^1.7.0",
     "apexcharts": "^3.31.0",
     "chai": "^4.3.4",
@@ -27,6 +29,7 @@
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^1.9.3",
+    "babel-register": "^6.26.0",
     "vite": "^2.6.4"
   }
 }
