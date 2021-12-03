@@ -13,6 +13,12 @@
     "@babel/preset-env": "^7.16.4",
     "@truffle/hdwallet-provider": "^1.7.0",
     "apexcharts": "^3.31.0",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-2": "^6.24.1",
+    "babel-preset-stage-3": "^6.24.1",
+    "babel-register": "^6.26.0",
     "chai": "^4.3.4",
     "chai-as-promised": "^7.1.1",
     "chai-bignumber": "^3.0.0",
@@ -29,7 +35,6 @@
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^1.9.3",
-    "babel-register": "^6.26.0",
     "vite": "^2.6.4"
   }
 }

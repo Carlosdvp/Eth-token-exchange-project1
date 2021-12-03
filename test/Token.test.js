@@ -1,4 +1,4 @@
-import { tokens } from './helpers'
+import { tokens, EVM_Revert } from './helpers'
 
 
 
@@ -57,24 +57,57 @@ contract('Token', ([deployer, receiver]) => {
 	})
 
 	describe('sending tokens', () => {
-		it('transfers token balances', async () => {
-			let balanceOf
+		let result
+		let amount
 
-			// before the transfer
-			balanceOf = await token.balanceOf(deployer)
-			console.log('Deployer balance before the transfer', balanceOf.toString())
-			balanceOf = await token.balanceOf(receiver)
-			console.log('Receiver balance before the transfer', balanceOf.toString())
+		// successful transfer
+		describe('success', async ()=> {
+			beforeEach(async () => {
+				// keep the toekn amount in a variable
+				amount = tokens(100)
+				result = await token.transfer(receiver, amount, { from: deployer})
+			})
 
-			// transfer
-			await token.transfer(receiver, tokens(100), { from: deployer })
+			it('transfers token balances', async () => {
+				let balanceOf
 
-			// After the transfer
-			balanceOf = await token.balanceOf(deployer)
-			console.log('Deployer balance after transher', balanceOf.toString())
-			balanceOf = await token.balanceOf(receiver)
-			console.log('Receiver balance after transher', balanceOf.toString())
+				// before the transfer
+				balanceOf = await token.balanceOf(deployer)
+				balanceOf.toString().should.equal(tokens(999900).toString())
+				balanceOf = await token.balanceOf(receiver)
+				balanceOf.toString().should.equal(tokens(100).toString())
+			})
 
+			it('emits a transfer event', async () => {
+				const log = result.logs[0]
+				log.event.should.equal('Transfer')
+				// now we grab the results.logs args array
+				const event = log.args
+				// check the from / to / and value parameters
+				event.from.toString().should.equal(deployer, 'from is correct')
+				event.to.toString().should.equal(receiver, 'to is correct')
+				event.value.toString().should.equal(amount.toString(), 'value is correct')
+			})
 		})
+
+		// failed transfer checks
+		describe('failure', async () => {
+			// if there are no tokens left throw an error
+			it('rejects insufficient balances', async () => {
+				let invalidAmount
+				invalidAmount = tokens(100000000) // 100 million, greater than the total supply
+				await token.transfer(receiver, invalidAmount, { from: deployer }).should.be.rejectedWith(EVM_Revert)
+
+				// try to transfer tokens when there are none
+				invalidAmount = tokens(10)
+				await token.transfer(deployer, invalidAmount, { from: receiver }).should.be.rejectedWith(EVM_Revert)
+			})
+
+			// check for valid recipient
+			it('rejects invalid recipient', async () => {
+				await token.transfer(0x0, amount, { from: deployer }).should.be.rejected
+			})
+		})
+
 	})
 })
