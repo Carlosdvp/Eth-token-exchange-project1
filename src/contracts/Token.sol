@@ -18,9 +18,11 @@ contract Token {
 
 	// Track balances
 	mapping(address => uint256) public balanceOf;
+	mapping(address => mapping(address => uint256)) public allowance;
 
 	// Events
 	event Transfer(address indexed from, address indexed to, uint256 value);
+	event Approval(address indexed owner, address indexed spender, uint256 value);
 
 	// contract constructor
 	constructor() {
@@ -30,23 +32,42 @@ contract Token {
 
 	// Send tokens
 	function transfer(address _to, uint256 _value) public returns (bool success) {
-		// check if address is valid or not
-		require(_to != address(0));
-
 		// use the require method to check the balance, if it evaluates to false then it will throw an error and stop execution
 		require(balanceOf[msg.sender] >= _value);
-
-		// main part of the function to be executed if the sender has enough tokens
-		balanceOf[msg.sender] = balanceOf[msg.sender].sub(_value);
-		balanceOf[_to] = balanceOf[_to].add(_value);
-		emit Transfer(msg.sender, _to, _value);
+		// call the nternal _transfer function
+		_transfer(msg.sender, _to, _value);
 		return true;
 	}
 
-	// Approve Tokens
+	// create an internal function to handle the transfer logic
+	function _transfer(address _from, address _to, uint256 _value) internal {
+		// check if address is valid or not
+		require(_to != address(0));
+		// main part of the function to be executed if the sender has enough tokens
+		balanceOf[_from] = balanceOf[_from].sub(_value);
+		balanceOf[_to] = balanceOf[_to].add(_value);
+		emit Transfer(_from, _to, _value);
+	}
 
+	// Approve Tokens
+	function approve(address _spender, uint256 _value) public returns(bool success) {
+		// require that the address is valid
+		require(_spender != address(0));
+		allowance[msg.sender][_spender] = _value;
+		emit Approval(msg.sender, _spender, _value);
+		return true;
+	}
 
 	// Transfer From
-
+	function transferFrom(address _from, address _to, uint256 _value) public returns(bool success) {
+		// make sure we can guard against insuffiient amounts
+		require(_value <= balanceOf[_from]);
+		require(_value <= allowance[_from][msg.sender]);
+		// reset the allowance after a transfer
+		allowance[_from][msg.sender] = allowance[_from][msg.sender].sub(_value);
+		_transfer(_from, _to, _value);
+		return true;
+	}
+	
 }
 

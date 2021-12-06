@@ -11,7 +11,7 @@ require('chai')
 	.should()
 
 // use the contract methd to include the tests
-contract('Token', ([deployer, receiver]) => {
+contract('Token', ([deployer, receiver, exchange]) => {
 	// call this method once for all the tests, that way we don't need to call it every time a test is executed
 	var token;
 	const name = 'Artemis'
@@ -110,4 +110,104 @@ contract('Token', ([deployer, receiver]) => {
 		})
 
 	})
+
+	describe('approving tokens', () => {
+		let result
+		let amount
+
+		beforeEach(async () => {
+			amount = tokens(100)
+			result = await token.approve(exchange, amount, { from: deployer })
+		})
+
+		// Approval and Transfer tests
+		describe('success', () => {
+			// check the approved balance of the allowance
+			it('allocates an allowance for delegated token spending on exchange', async () => {
+				const allowance = await token.allowance(deployer, exchange)
+				allowance.toString().should.equal(amount.toString())
+			})
+
+			// checks for the approval event to be emmited
+			it('emits an approval event', async () => {
+				const log = result.logs[0]
+				log.event.should.equal('Approval')
+				const event = log.args
+
+				event.owner.toString().should.equal(deployer, 'owner is correct')
+				event.spender.should.equal(exchange, 'spender is correct')
+				event.value.toString().should.equal(amount.toString(), 'value is correct')
+			})
+
+		})
+
+		describe('failure', () => {
+			it('rejects invalid spenders', async () => {
+				await token.approve(0x0, amount, { from: deployer }).should.be.rejected
+			})
+		})
+
+	})
+
+	// Check the Transfer From logic
+	describe('delegated token transfers', () => {
+		let result
+		let amount
+
+		// first approve the tokens
+		beforeEach(async () => {
+			amount = tokens(100)
+			await token.approve(exchange, amount, { from: deployer })
+		})
+
+		// successful transfer
+		describe('success', async ()=> {
+			beforeEach(async () => {
+				// do the transfer from deployer to receiver by the exchange
+				result = await token.transferFrom(deployer, receiver, amount, { from: exchange})
+			})
+
+			it('transfers token balances', async () => {
+				let balanceOf
+				// do the transfer
+				balanceOf = await token.balanceOf(deployer)
+				balanceOf.toString().should.equal(tokens(999900).toString())
+				balanceOf = await token.balanceOf(receiver)
+				balanceOf.toString().should.equal(tokens(100).toString())
+			})
+
+			it('resets the allowance', async () => {
+				const allowance = await token.allowance(deployer, exchange)
+				allowance.toString().should.equal('0')
+			})
+
+			it('emits a transfer event', async () => {
+				const log = result.logs[0]
+				log.event.should.equal('Transfer')
+				const event = log.args
+
+				event.from.toString().should.equal(deployer, 'from is correct')
+				event.to.should.equal(receiver, 'to is correct')
+				event.value.toString().should.equal(amount.toString(), 'value is correct')
+			})
+
+		})
+
+		// failed transfer checks - throw an error if they try to send more tokens than there are out there
+		describe('failure', async () => {
+			// attempt to transfer too many tokens
+			it('rejects transfer when the balance is insufficient', async () => {
+				const invalidAmount = tokens(15000000)
+				await token.transferFrom(deployer, receiver, invalidAmount, { from: exchange }).should.be.rejectedWith(EVM_Revert)
+			})
+
+			// reject transfers to invalid recipients
+			it('rejects transfer to invalid recipients', async () => {
+				await token.transferFrom(deployer, 0x0, amount, { from: exchange }).should.be.rejected
+			})
+		})
+
+	})
+
+
 })
