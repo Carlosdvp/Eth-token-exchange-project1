@@ -180,10 +180,28 @@ contract('Exchange', ([deployer, feeAccount, user1]) => {
 				const balance = await exchange.tokens(token.address, user1)
 				balance.toString().should.equal('0')
 			})
+
+			it('emits a Withdraw event', async () => {
+				const log = result.logs[0]
+				log.event.should.equal('Withdraw')
+				const event = log.args
+
+				event.token.should.equal(token.address)
+				event.user.should.equal(user1)
+				event.amount.toString().should.equal(amount.toString())
+				event.balance.toString().should.equal('0')
+			})
 		})
 
 		describe('failure', async () => {
-			
+			it('rejects Ether withdrawals', async () => {
+				await exchange.withdrawToken(ETHER_ADDRESS, tokens(10), { from: user1 }).should.be.rejectedWith(EVM_Revert)
+			})
+
+			it('fails due to insufficient funds in balance', async () => {
+				// tries to withdraw without depositing any tokens first
+				await exchange.withdrawToken(token.address, tokens(100), { from: user1 }).should.be.rejectedWith(EVM_Revert)
+			})
 		})
 	})
 

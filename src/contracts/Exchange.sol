@@ -85,11 +85,23 @@ contract Exchange {
   }
 
   // 5. Withdraw tokens
-  function withdrawTokens(address _token, uint256 _amount) public {
+  function withdrawToken(address _token, uint256 _amount) public {
+  	// make sure it is not Ether
+  	require(_token != ETHER);
+  	// make sure they have enough tokens in their balance to withdraw the requested amount
+  	require(tokens[_token][msg.sender] >= _amount);
+  	// update the deposit balance
   	tokens[_token][msg.sender] = tokens[_token][msg.sender].sub(_amount);
   	// xfer from the smart contract back to the user
   	require(Token(_token).transfer(msg.sender, _amount));
+  	// emit the withdraw event
+  	emit Withdraw(_token, msg.sender, _amount, tokens[_token][msg.sender]);
   }
+
+  function balanceOf(address _token, address _user) public view returns (uint256 _balance) {
+  	return tokens[_token][_user];
+  }
+  
   
   
 
