@@ -14,7 +14,7 @@ import 'openzeppelin-solidity/contracts/utils/math/SafeMath.sol';
 	// [x] 3. Withdraw Ether
 	// [x] 4. Deposit tokens
 	// [x] 5. Withdraw tokens
-	// [] 6. Check balances
+	// [x] 6. Check balances
 	// [] 7. Make an order
 	// [] 8. Cancel an order
 	// [] 9. Fill an order
@@ -36,10 +36,25 @@ contract Exchange {
 
 	// 1st key is the Token address which keeps track of all the tokens deposited, the 2nd key is the user address who has deposited the tokens and will show their balances, the final value is the actual number of tokens held by the user
 	mapping (address => mapping (address => uint256)) public tokens;
+	//  way to store the order on the blockchain
+	mapping (uint256 => _Orcer) public orders;
+	
 	
 	// Events
 	event Deposit(address token, address user, uint256 amount, uint256 balance);
 	event Withdraw(address token, address user, uint amount, uint balance);
+	
+
+	// We need a way to model the order
+	struct _Order {
+		uint id;
+		address user;
+		address tokenGet;
+		uint amountGET;
+		address tokenGive;
+		uint amountGive;
+		uint timestamp;		
+	}
 	
 	// Contract constructor function
   constructor(address _feeAccount, uint256 _feePercent) {
@@ -102,6 +117,12 @@ contract Exchange {
   	return tokens[_token][_user];
   }
   
+ 	// and a way to addthe order to storage
+ 	function makeOrder( ) public {
+ 		
+ 	}
+ 	
+
   
   
 
