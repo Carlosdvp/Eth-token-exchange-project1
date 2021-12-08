@@ -11,9 +11,9 @@ import 'openzeppelin-solidity/contracts/utils/math/SafeMath.sol';
 	// TODO:
 	// [x] 1. Set the fee account
 	// [x] 2. Deposit Ether
-	// [] 3. Withdraw Ether
+	// [x] 3. Withdraw Ether
 	// [x] 4. Deposit tokens
-	// [] 5. Withdraw tokens
+	// [x] 5. Withdraw tokens
 	// [] 6. Check balances
 	// [] 7. Make an order
 	// [] 8. Cancel an order
@@ -39,6 +39,7 @@ contract Exchange {
 	
 	// Events
 	event Deposit(address token, address user, uint256 amount, uint256 balance);
+	event Withdraw(address token, address user, uint amount, uint balance);
 	
 	// Contract constructor function
   constructor(address _feeAccount, uint256 _feePercent) {
@@ -46,10 +47,26 @@ contract Exchange {
     feePercent = _feePercent;
   }
 
+  // Fallback: reverts if Ether is sent to this smart contract by mistake
+  fallback() external {
+  	revert();
+  }
+
   // 2. Deposit Ether
   function depositEther() payable public {
   	tokens[ETHER][msg.sender] = tokens[ETHER][msg.sender].add(msg.value);
   	emit Deposit(ETHER, msg.sender, msg.value, tokens[ETHER][msg.sender]);
+  }
+
+  // 3. Withdraw Ether
+  function withdrawEther(uint _amount) public {
+  	// make sure the amount they are withdrawing is equl to or less than the amount they have in the contract
+  	require(tokens[ETHER][msg.sender] >= _amount);
+  	
+  	tokens[ETHER][msg.sender] = tokens[ETHER][msg.sender].sub(_amount);
+  	payable(msg.sender).transfer(_amount);
+  	// emit the withdraw event
+  	emit Withdraw(ETHER, msg.sender, _amount, tokens[ETHER][msg.sender]);
   }
   
   // 4. Deposit tokens
@@ -66,6 +83,14 @@ contract Exchange {
   	// Emit event so user knows what happened and when
   	emit Deposit(_token, msg.sender, _amount, tokens[_token][msg.sender]);
   }
+
+  // 5. Withdraw tokens
+  function withdrawTokens(address _token, uint256 _amount) public {
+  	tokens[_token][msg.sender] = tokens[_token][msg.sender].sub(_amount);
+  	// xfer from the smart contract back to the user
+  	require(Token(_token).transfer(msg.sender, _amount));
+  }
+  
   
 
 }
