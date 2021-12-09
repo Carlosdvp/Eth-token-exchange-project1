@@ -16,7 +16,7 @@ import 'openzeppelin-solidity/contracts/utils/math/SafeMath.sol';
 	// [x] 5. Withdraw tokens
 	// [x] 6. Check balances
 	// [x] 7. Make an order
-	// [] 8. Cancel an order
+	// [x] 8. Cancel an order
 	// [] 9. Fill an order
 	// [] 10. Charge Fees
 
@@ -39,19 +39,30 @@ contract Exchange {
 	//  way to store the order on the blockchain
 	mapping (uint256 => _Order) public orders;
 	uint256 public orderCount;
+	// 7. Cancel an order
+	mapping (uint256 => bool) public orderCancelled;
 	
 	
 	// Events
 	event Deposit(address token, address user, uint256 amount, uint256 balance);
-	event Withdraw(address token, address user, uint amount, uint balance);
+	event Withdraw(address token, address user, uint256 amount, uint256 balance);
 	event Order(
-		uint id,
+		uint256 id,
 		address user,
 		address tokenGet,
-		uint amountGet,
+		uint256 amountGet,
 		address tokenGive,
-		uint amountGive,
-		uint timestamp
+		uint256 amountGive,
+		uint256 timestamp
+	);
+	event Cancel(
+		uint256 id,
+		address user,
+		address tokenGet,
+		uint256 amountGet,
+		address tokenGive,
+		uint256 amountGive,
+		uint256 timestamp
 	);
 	
 	// STRUCTS
@@ -127,6 +138,7 @@ contract Exchange {
   	return tokens[_token][_user];
   }
   
+  // 7. Make an order
  	// and a way to addthe order to storage
  	function makeOrder(address _tokenGet, uint256 _amountGet, address _tokenGive, uint256 _amountGive) public {
  		// create a counter to kep track of al the orders created
@@ -135,6 +147,20 @@ contract Exchange {
  		orders[orderCount] = _Order(orderCount, msg.sender, _tokenGet, _amountGet, _tokenGive, _amountGive, block.timestamp);
  		// trigger an event everytime an order is made
  		emit Order(orderCount, msg.sender, _tokenGet, _amountGet, _tokenGive, _amountGive, block.timestamp);
+ 	}
+ 	
+ 	// 8. Cancel an order
+ 	function cancelOrder(uint256 _id) public {
+ 		// first get the order info from the blockchain
+ 		_Order storage _order = orders[_id];
+ 		// must be my order, can't cancel any other orders
+ 		require (address(_order.user) == msg.sender); 		
+ 		// order must exist, can't cancel an order that doesn't
+ 		require(_order.id == _id);
+ 		// update the cancelled order mapping
+ 		orderCancelled[_id] = true;
+ 		// emit the event
+ 		emit Cancel(_order.id, msg.sender, _order.tokenGet, _order.amountGet, _order.tokenGive, _order.amountGive, block.timestamp);
  	}
  	
 

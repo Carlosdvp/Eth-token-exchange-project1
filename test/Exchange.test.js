@@ -13,7 +13,7 @@ require('chai')
 	.should()
 
 // use the contract methd to include the tests
-contract('Exchange', ([deployer, feeAccount, user1]) => {
+contract('Exchange', ([deployer, feeAccount, user1, user2]) => {
 	// call this method once for all the tests, that way we don't need to call it every time a test is executed
 	var exchange,
 			token,
@@ -249,6 +249,56 @@ contract('Exchange', ([deployer, feeAccount, user1]) => {
 			event.tokenGive.should.equal(ETHER_ADDRESS, 'tokenGive is correct')
 			event.amountGive.toString().should.equal(ether(1).toString(), 'amountGive is correct')
 			event.timestamp.toString().length.should.be.at.least(1, 'timestamp is present')
+		})
+	})
+
+	describe('order actions', async () => {
+		beforeEach(async () => {
+			//user1 deposits ether
+			await exchange.depositEther({ from: user1, value: ether(1) })
+			// user1 places an order to buy a token with Ether
+			await exchange.makeOrder(token.address, tokens(1), ETHER_ADDRESS, ether(1), { from: user1 })
+		})
+
+		describe('canceliing orders', async () => {
+			let result
+
+			describe('success', async () => {
+				beforeEach(async () => {
+					result = await exchange.cancelOrder('1', { from: user1 })
+				})
+
+				it('updates canceled orders', async () => {
+					const orderCancelled = await exchange.orderCancelled(1)
+					orderCancelled.should.equal(true)
+				})
+
+				it('emits a Cancel event', async () => {
+					const log = result.logs[0]
+					log.event.should.equal('Cancel')
+					const event = log.args 
+
+					event.id.toString().should.equal('1', 'id is correct')
+					event.user.should.equal(user1, 'user is correct')
+					event.tokenGet.should.equal(token.address, 'tokenGet is correct')
+					event.amountGet.toString().should.equal(tokens(1).toString(), 'amountGet is correct')
+					event.tokenGive.should.equal(ETHER_ADDRESS, 'tokenGive is correct')
+					event.amountGive.toString().should.equal(ether(1).toString(), 'amountGive is correct')
+					event.timestamp.toString().length.should.be.at.least(1, 'timestamp is present')
+				})
+			})
+
+			describe('failure', async () => {
+				it('rejects the invalid order ids', async () => {
+					const invalidOrderId = 99999
+					await exchange.cancelOrder(invalidOrderId, { from: user1 }).should.be.rejectedWith(EVM_Revert)
+				})
+
+				it('rejects unauthorized cancellation', async () => {
+					// try to cancel another user's order
+					await exchange.cancelOrder('1', { from: user2 }).should.be.rejectedWith(EVM_Revert)
+				})
+			})
 		})
 	})
 
