@@ -41,6 +41,9 @@ contract Exchange {
 	uint256 public orderCount;
 	// 7. Cancel an order
 	mapping (uint256 => bool) public orderCancelled;
+	// 9. Fill an order
+	mapping (uint256 => bool) public orderFilled;
+	
 	
 	
 	// Events
@@ -64,6 +67,17 @@ contract Exchange {
 		uint256 amountGive,
 		uint256 timestamp
 	);
+	event Trade(
+		uint256 id,
+		address user,
+		address tokenGet,
+		uint256 amountGet,
+		address tokenGive,
+		uint256 amountGive,
+		address userFill,
+		uint256 timestamp
+	);
+
 	
 	// STRUCTS
 	// We need a way to model the order
@@ -163,6 +177,37 @@ contract Exchange {
  		emit Cancel(_order.id, msg.sender, _order.tokenGet, _order.amountGet, _order.tokenGive, _order.amountGive, block.timestamp);
  	}
  	
+ 	// 9. Fill an order
+ 	function fillOrder(uint256 _id) public {
+ 		// first make sure the order exists, that it hasn't been filled and that it's not a cancelled order
+ 		require(_id > 0 && _id <= orderCount);
+ 		require(!orderFilled[_id]);
+ 		require(!orderCancelled[_id]);
+ 		// fetch the order
+ 		_Order storage _order = orders[_id];
+ 		// make the trade
+ 		_trade(_order.id, _order.user, _order.tokenGet, _order.amountGet, _order.tokenGive, _order.amountGive, block.timestamp)
+ 		// mark order as filled
+ 		orderFilled[_order.id] = true;
+ 	}
+
+ 	// 9a. Helper function
+ 	function _trade(uint256 _orderId, address _user, address _tokenGet, uint256 _amountGet, address _tokenGive, uint256 _amountGive) internal {
+ 		// Fee paid by the user that creates the order, the msg.sender
+ 		uint256 _feeAmount = _amountGet.mul(feePercent).div(100);
+
+ 		// execute the trade
+ 		tokens[_tokenGet][msg.sender] = tokens[_tokenGet][msg.sender].sub(_amountGet.add(_feeAmount));
+ 		tokens[_tokenGet][_user] = tokens[_tokenGet][_user].add(_amountGet);
+ 		tokens[_tokenGet][feeAccount] = tokens[_tokenGet][feeAccount].add(_feeAmount);
+ 		tokens[_tokenGive][_user] = tokens[_tokenGive][_user].sub(_accountGive);
+ 		tokens[_tokenGive][msg.sender] = tokens[_tokenGive][msg.sender].add(_amountGive);
+
+ 		// emit trade event
+ 		emit Trade(_orderId, _user, _tokenGet, _amountGet, _tokenGive, _amountGive, msg.sender, block.timestamp);
+ 	}
+ 	
+
 
   
   

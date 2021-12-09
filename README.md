@@ -1,7 +1,17 @@
-# Vue 3 + Vite
+# Project One
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+## Create ERC-20 Token
+	- create a smart contract for an ERC-20 token: Artemis $MOON
+	- use chai and truffle for the tests
 
-## Recommended IDE Setup
+## Create a cryptocurrency exchange
+	- create a smart contract with the basic functinality of an exchange
+	- deposit and withdraw funds
+	- place and cancel an order to swap tokens
 
-- [VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.volar)
+## Tech Stack used
+
+- Solidity for the Dapp
+- JS for the tests
+- Vue (Vite) for the fronend
+- git for version control
