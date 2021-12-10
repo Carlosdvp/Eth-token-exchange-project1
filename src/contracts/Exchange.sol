@@ -17,8 +17,8 @@ import 'openzeppelin-solidity/contracts/utils/math/SafeMath.sol';
 	// [x] 6. Check balances
 	// [x] 7. Make an order
 	// [x] 8. Cancel an order
-	// [] 9. Fill an order
-	// [] 10. Charge Fees
+	// [x] 9. Fill an order
+	// [x] 10. Charge Fees
 
 
 // 1. Set the fee account
@@ -186,7 +186,7 @@ contract Exchange {
  		// fetch the order
  		_Order storage _order = orders[_id];
  		// make the trade
- 		_trade(_order.id, _order.user, _order.tokenGet, _order.amountGet, _order.tokenGive, _order.amountGive, block.timestamp)
+ 		_trade(_order.id, _order.user, _order.tokenGet, _order.amountGet, _order.tokenGive, _order.amountGive);
  		// mark order as filled
  		orderFilled[_order.id] = true;
  	}
@@ -200,16 +200,11 @@ contract Exchange {
  		tokens[_tokenGet][msg.sender] = tokens[_tokenGet][msg.sender].sub(_amountGet.add(_feeAmount));
  		tokens[_tokenGet][_user] = tokens[_tokenGet][_user].add(_amountGet);
  		tokens[_tokenGet][feeAccount] = tokens[_tokenGet][feeAccount].add(_feeAmount);
- 		tokens[_tokenGive][_user] = tokens[_tokenGive][_user].sub(_accountGive);
+ 		tokens[_tokenGive][_user] = tokens[_tokenGive][_user].sub(_amountGive);
  		tokens[_tokenGive][msg.sender] = tokens[_tokenGive][msg.sender].add(_amountGive);
 
  		// emit trade event
  		emit Trade(_orderId, _user, _tokenGet, _amountGet, _tokenGive, _amountGive, msg.sender, block.timestamp);
  	}
- 	
-
-
-  
-  
 
 }
