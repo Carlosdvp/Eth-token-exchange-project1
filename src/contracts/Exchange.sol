@@ -21,11 +21,11 @@ import 'openzeppelin-solidity/contracts/utils/math/SafeMath.sol';
 	// [x] 10. Charge Fees
 
 
-// 1. Set the fee account
 contract Exchange {
 	// import SafeMath module
 	using SafeMath for uint;
 
+	// 1. Set the fee account
 	// state variables
 		// the account that receives the exchanges fees
 	address public feeAccount;
