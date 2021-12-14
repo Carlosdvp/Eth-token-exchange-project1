@@ -1,17 +1,19 @@
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
+import Exchange from './components/Exchange.vue'
+import NavBAr from './components/NavBar.vue'
+
 </script>
 
 <template>
-  <HelloWorld msg="Dapp #1" />
+  <div>
+    
+    <NavBAr></NavBAr>
+    <Exchange></Exchange>
+    
+  </div>
 </template>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-  background-color: lightskyblue;
-}
+
 </style>
+ 
