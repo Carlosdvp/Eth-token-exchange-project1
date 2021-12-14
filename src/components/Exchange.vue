@@ -81,7 +81,7 @@ defineProps({
 }
 
 .vertical > .card {
-  height: 99%;
+  height: 98.5%;
   margin: 3px;
 }
 
@@ -108,7 +108,7 @@ defineProps({
   grid-template-columns: 100%;
   align-items: center;
   border: 1px solid ghostwhite;
-  border-radius: 15px;
+  border-radius: 1px;
   margin: 0;
 }
 

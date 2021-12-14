@@ -63,8 +63,8 @@ nav {
   text-align: center;
   padding: 1rem 0;
   border: 1px solid lightslategray;
-  margin: 3px 0;
-  background-color: rgba(75,0,130, .30);
+  margin: 0  0 3px 0;
+  background-color: rgba(4, 8, 8, .7);
 }
 
 /* for the burger menu */
