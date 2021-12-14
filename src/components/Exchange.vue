@@ -15,13 +15,13 @@ defineProps({
     <div class="card">
       <div>
         <h2>Section 1</h2>
-        <p id="description">bacon milkshake pollerita ojo de bife ribeye</p>
+        <p class="description">bacon milkshake pollerita ojo de bife ribeye</p>
       </div>
     </div>
     <div class="card">
       <div>
         <h2>Section 2</h2>
-        <p id="description">bacon milkshake pollerita ojo de bife ribeye</p>
+        <p class="description">bacon milkshake pollerita ojo de bife ribeye</p>
       </div>
     </div>
   </div>
@@ -30,7 +30,7 @@ defineProps({
     <div class="card">
       <div>
         <h2>Section 3</h2>
-        <p id="description">bacon milkshake pollerita ojo de bife ribeye</p>
+        <p class="description">bacon milkshake pollerita ojo de bife ribeye</p>
       </div>
     </div>  
   </div>
@@ -39,13 +39,13 @@ defineProps({
     <div class="card">
       <div>
         <h2>Section 4</h2>
-        <p id="description">bacon milkshake pollerita ojo de bife ribeye</p>
+        <p class="description">bacon milkshake pollerita ojo de bife ribeye</p>
       </div>
     </div>  
     <div class="card">
       <div>
         <h2>Section 5</h2>
-        <p id="description">bacon milkshake pollerita ojo de bife ribeye</p>
+        <p class="description">bacon milkshake pollerita ojo de bife ribeye</p>
       </div>
     </div>  
   </div>
@@ -54,11 +54,10 @@ defineProps({
     <div class="card">
       <div>
         <h2>Section6</h2>
-        <p id="description">bacon milkshake pollerita ojo de bife ribeye</p>
+        <p class="description">bacon milkshake pollerita ojo de bife ribeye</p>
       </div>
     </div>
   </div>
-
 
 </div>
 
@@ -66,20 +65,13 @@ defineProps({
 
 <style scoped>
 
-div {
-/*   margin-bottom: 2em;
-  margin-top: 2em; */
-}
-
 .container {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
-  grid-gap: 0.5em;
-  margin: 0 auto;
-  padding: 1rem;
+  padding: 0.3rem 0;
   background:  linear-gradient(
-    rgba(50, 100, 100, .7),
-    rgba(50, 100, 100, .7)
+    rgba(50, 100, 100, .9),
+    rgba(50, 100, 100, .9)
   ),
   url('../assets/splatter.jpg');
   background-repeat: round;
@@ -89,40 +81,39 @@ div {
 }
 
 .vertical > .card {
-  height: 102%;
-  margin: 14px 14px 0;
+  height: 99%;
+  margin: 3px;
 }
 
 .vertical-split > div {
-  height: 50%;
+  height: 49%;
+  margin: 3px;
 }
 
-.vertical-split > div:first-child {
-  margin-bottom: 8px
-}
+/* .vertical-split > div:first-child {
+  margin-bottom: 2px;
+} */
 
-.vertical-split:last-child > div:first-child {
-  height: 60%
-}
+/* .vertical-split:last-child > div:first-child {
+  height: 60%;
+} */
 
-.vertical-split:last-child > div:last-child {
-  height: 40%
-}
+/* .vertical-split:last-child > div:last-child {
+  height: 40%;
+} */
 
 .card {
   display: grid;
-  width: 93%;
+  width: 95%;
   grid-template-columns: 100%;
   align-items: center;
-  justify-content: center;
   border: 1px solid ghostwhite;
   border-radius: 15px;
-  margin: 1em auto;
+  margin: 0;
 }
 
-
-#description p {
-  padding: 0 3.6em;
+.description {
+  padding: 1em;
   text-align: left;
 }
 
@@ -145,7 +136,7 @@ div {
   .vertical-split {
     display: block
   }
-  
+
   .vertical-split > div,
   .vertical-split > div:first-child {
     height: auto

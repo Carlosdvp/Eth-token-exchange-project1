@@ -30,8 +30,6 @@
 
 </nav>
 <!-- End of the Navbar section -->
-
-
 </template>
 
 
@@ -64,6 +62,9 @@ nav {
   align-items: center;
   text-align: center;
   padding: 1rem 0;
+  border: 1px solid lightslategray;
+  margin: 3px 0;
+  background-color: rgba(75,0,130, .30);
 }
 
 /* for the burger menu */

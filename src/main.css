@@ -5,18 +5,17 @@ Main Styles for index.html, the entry point for the Vite application
 *****************************/
 
 body {
-  background-color: darkslategrey;
+  background-color: rgb(70,130,180);
   color: ghostwhite;
   margin: 0;
   padding: 0;
-
 }
 
 #app {
 	display: grid;
 	position: absolute;
   margin: 0;
-  height: 90%;
+  height: 100%;
   width: 100%;
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   text-align: center;
