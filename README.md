@@ -43,4 +43,4 @@
 
 The Part 2 project uses React and Bootstrap or the framework and the scaffolding respectively.
 
-I prefer to use Vue.js, so I have replaced React with Vite. And I have also replaced Bootstrap with CSS grid and custom css.
+I prefer to use Vue.js, so I have replaced React with Vite. And I have also replaced Bootstrap/flexbox with CSS grid and custom css.

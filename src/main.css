@@ -9,14 +9,15 @@ body {
   color: ghostwhite;
   margin: 0;
   padding: 0;
+
 }
 
 #app {
 	display: grid;
 	position: absolute;
   margin: 0;
-  height: 100%;
   width: 100%;
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   text-align: center;
+  height: 85vh;
 }

@@ -16,13 +16,13 @@
 
 		<ul class="navbar-nav">
 			<li class="nav-item-1">
-				<router-link to="/" class="nav-link">Link 1</router-link>
+				<a to="#" class="nav-link">Link 1</a>
 			</li>
 			<li class="nav-item-2">
-				<router-link to="/" class="nav-link">Link 2</router-link>
+				<a to="#" class="nav-link">Link 2</a>
 			</li>
 			<li class="nav-item-3">
-				<router-link to="/" class="nav-link">Link 3</router-link>
+				<a to="#footer" class="nav-link">Link 3</a>
 			</li>
 		</ul>
 

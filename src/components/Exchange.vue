@@ -77,7 +77,8 @@ defineProps({
   background-repeat: round;
   background-size: cover;
   color: ghostwhite; 
-  height: 100%;
+  /* height: 100%; */
+  height: 87vh;
 }
 
 .vertical > .card {

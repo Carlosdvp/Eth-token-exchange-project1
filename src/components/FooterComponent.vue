@@ -39,10 +39,10 @@ footer p  {
 
 footer {
   background:  linear-gradient(
-    rgba(4, 8, 8, .7),
+    rgba(4, 8, 8, .9),
     rgba(4, 8, 8, .85)
   ),
-  url('../assets/pink-texture.jpg');
+  url('../assets/abstract-texture.jpg');
   background-repeat: no-repeat;
   background-size: cover;
 }
